@@ -27,9 +27,14 @@ void myCylinder::drawPipe(){
 	glPushMatrix();
 		glBegin(GL_QUAD_STRIP);
 		for(int i = 0; i <= slices ; i++){
-			glNormal3d(sin(i*angle),0,cos(i*angle));
 
+
+			glNormal3d(sin(i*angle),0,cos(i*angle));
+			
+			glTexCoord2f(i/(float)slices,1);
 			glVertex3f(sin(i*angle),stacks_height,cos(i*angle));
+
+			glTexCoord2f(i/(float)slices,0);
 			glVertex3f(sin(i*angle),0,cos(i*angle));
 		}
 		glEnd();
@@ -40,14 +45,22 @@ void myCylinder::drawPlygonalPipe(){
 	glPushMatrix();
 		glBegin(GL_QUADS);
 		for(int i = 0; i < slices ; i++){
-			glNormal3d(sin(i*angle + (angle/2)),0,cos(i*angle + (angle/2)));
-		
+
+				glNormal3d(sin(i*angle + (angle/2)),0,cos(i*angle + (angle/2)));
+				
+				glTexCoord2f(0,0);
+				glVertex3f(sin(i*angle),0,cos(i*angle));
+
+				glTexCoord2f(1,0);
 				glVertex3f(sin((i+1)*angle),0,cos((i+1)*angle));
+				
+				glTexCoord2f(1,1);
 				glVertex3f(sin((i+1)*angle),stacks_height,cos((i+1)*angle));
 				
+				glTexCoord2f(0,1);
 				glVertex3f(sin(i*angle),stacks_height,cos(i*angle));
 				
-				glVertex3f(sin(i*angle),0,cos(i*angle));		
+		
 				
 		}	
 		glEnd();

@@ -24,9 +24,11 @@ Plane::~Plane(void)
 }
 
 void Plane::calculateTextFit(float planeW, float planeH, float textW, float textH){
-	
-	float appTextH = (textH/(float)textW) < (planeH/(float)planeW) ? planeW*(textH/(float)textW) : planeH;
-	float appTextW =  (textH/(float)textW) < (planeH/(float)planeW) ? planeW : planeH*(textW/(float)textH);
+	float planePropH =  (planeH/(float)planeW);
+	float textPropH  = (textH/(float)textW);
+
+	float appTextH = textPropH < planePropH ? planeW*textPropH : planeH;
+	float appTextW = textPropH  < planePropH ? planeW : planeH*(textW/(float)textH);
 
 	float alphaH= ((float)1 - (appTextH/(float)planeH))/2;
 	float alphaW = ((float)1 - (appTextW/(float)planeW))/2;
