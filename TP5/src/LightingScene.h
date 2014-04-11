@@ -26,10 +26,13 @@ public:
 	MyTable * table;
 	MyChair * chair;
 	Plane* wall;
+	Plane* boardWall;
+	Plane * floor;
+
 	Plane* boardA;
 	Plane* boardB;
-	CGFappearance* materialA;
-	CGFappearance* materialB;
+	CGFappearance* slidesAppearance;
+	CGFappearance* boardAppearance;
 
 	//Cylinder
 	myCylinder * cilindro;
