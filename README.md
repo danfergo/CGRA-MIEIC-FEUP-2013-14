@@ -21,7 +21,11 @@ Computação Gráfica @ FEUP <br>
 
  </i>
 <center>
-<href target="_blank" href="http://fe.up.pt" title="Faculdade de Engenharia da Universidade do Porto">
+<a target="_blank" href="http://fe.up.pt" title="Faculdade de Engenharia da Universidade do Porto">
 <img src="http://www.maiahoje.pt/images/noticias/FEUP.png" height="100px"/>
+</a>
+
+ <a target="_blank" href="http://www.opengl.org/" title="OpenGL">
+<img src="http://delphigl.de/glcapsviewer/opengl-logo.gif" height="100px"> 
 </a>
 </center>
