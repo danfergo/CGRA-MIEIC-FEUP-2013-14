@@ -1,6 +1,7 @@
 #include "LightingScene.h"
 #include "CGFaxis.h"
 #include "CGFapplication.h"
+#include <iostream>
 //#include "MyTable.h"
 //#include "Plane.h"
 
@@ -52,8 +53,16 @@ float difWall[3] = {1,1,0.3};
 float specWall[3] = {0.01, 0.01, 0};
 float shininessWall = 5.f;
 
+float ambLeftWall[3] ={0.2,0.2,0.1};
+float difLeftWall[3] = {1,1,0.9};
+float specLeftWall[3] = {0.01, 0.01, 0.01};
+float shininessLeftWall = 5.f;
+
+
 CGFappearance * wallMaterial;
+CGFappearance * leftWall;
 CGFappearance * floorMaterial;
+
 
 void LightingScene::init() 
 {
@@ -111,7 +120,7 @@ void LightingScene::init()
 	//Declares scene elements
 	table = new MyTable();
 	chair = new MyChair();
-	wall = new Plane();
+	wall = new Plane(100,-1.25,2.25,-0.5,1.5);
 	cilindro = new myCylinder(15,20,true);
 	lamp = new MyLamp(GL_LIGHT4);
 
@@ -121,9 +130,24 @@ void LightingScene::init()
 	
 	//Declares materials	
 	materialA = new CGFappearance(ambA,difA,specA,shininessB);
+	materialA->setTexture("slides.png");
+	materialA->setTextureWrap(GL_CLAMP,GL_CLAMP);
+	boardA->calculateTextFit(BOARD_WIDTH,BOARD_HEIGHT,512,512);
+
+	
 	materialB = new CGFappearance(ambB,difB,specB,shininessB);
+	materialB->setTexture("board.png");
+	materialB->setTextureWrap(GL_CLAMP,GL_CLAMP);
+	boardB->calculateTextFit(BOARD_WIDTH,BOARD_HEIGHT,512,327);
+
+	
 	wallMaterial = new CGFappearance(ambWall,difWall,specWall,shininessWall);
+	leftWall = new CGFappearance(ambLeftWall,difLeftWall,specLeftWall,shininessLeftWall);
+	leftWall->setTexture("window.png");
+	leftWall->setTextureWrap(GL_CLAMP, GL_CLAMP);
+
 	floorMaterial = new CGFappearance(ambWall,difFloor,specFloor,shininessFloor);
+	floorMaterial->setTexture("floor.png");
 }
 
 void LightingScene::display() 
@@ -165,11 +189,11 @@ void LightingScene::display()
 			cilindro->draw();
 		glPopMatrix(); 
 		
-		glPushMatrix();
+	/*	glPushMatrix();
 			cilindro->setSmooth(false);
 			glTranslatef(12,0,4);
 			cilindro->draw();
-		glPopMatrix();
+		glPopMatrix(); */
 	glPopMatrix(); 
 
 		
@@ -208,15 +232,6 @@ void LightingScene::display()
 
 	wallMaterial->apply();
 
-	//LeftWall
-	glPushMatrix();
-		glTranslated(0,4,7.5);
-		glRotated(-90.0,0,0,1);
-
-		glScaled(8,0.2,15);
-		wall->draw();
-	glPopMatrix();
-
 	//PlaneWall
 	glPushMatrix();
 		glTranslated(7.5,4,0);
@@ -225,6 +240,17 @@ void LightingScene::display()
 		wall->draw();
 	glPopMatrix();
 
+	leftWall->apply();
+
+	//LeftWall
+	glPushMatrix();
+		glTranslated(0,4,7.5);
+		glRotated(-90.0,0,0,1);
+		glRotated(90.0,0,1,0);
+		glScaled(15,0.2,8);
+		
+		wall->draw();
+	glPopMatrix();
 
 	// Board A
 	glPushMatrix();

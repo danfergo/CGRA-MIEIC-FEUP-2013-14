@@ -17,6 +17,7 @@ void MyTable::draw(){
 	float specWood[3] = {0.05, 0.05, 0.05};
 	float shininessWood = 10.f;
 	CGFappearance * wood = new CGFappearance(ambWood,difWood,specWood,shininessWood);
+	wood->setTexture("table.png");
 
 	float ambMetal[3] = {0.3, 0.3, 0.3};
 	float difMetal[3] = {0.4, 0.4, 0.4};
