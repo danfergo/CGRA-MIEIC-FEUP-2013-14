@@ -8,12 +8,17 @@
 #include "MyChair.h"
 #include "myCylinder.h"
 #include "MyLamp.h"
+#include "MyClock.h"
+
+#include <time.h>       /* time_t, struct tm, difftime, time, mktime */
+
 
 class LightingScene : public CGFscene
 {
 public:
 	void init();
 	void display();
+	virtual void update(unsigned long);
 
 	CGFlight* light0;
 	CGFlight* light1;
@@ -33,6 +38,9 @@ public:
 	Plane* boardB;
 	CGFappearance* slidesAppearance;
 	CGFappearance* boardAppearance;
+
+	//Clock
+	MyClock * clock;
 
 	//Cylinder
 	myCylinder * cilindro;

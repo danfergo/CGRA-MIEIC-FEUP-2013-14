@@ -5,7 +5,7 @@
 #include "CGFappearance.h"
 #include "CGFlight.h"
 #include "MySemiSphere.h"
-#include "myCylinder.h";
+#include "myCylinder.h"
 
 class MyLamp: public CGFobject{
 	private:

@@ -15,6 +15,7 @@ void myCylinder::drawPolygon(){
 		glNormal3d(0,1,0);
 		glBegin(GL_POLYGON);
 		for(int i = 0; i < slices ; i++){
+			glTexCoord2f(0.5*(sin(i*angle))+0.5,0.5*(cos(i*angle))+0.5);
 			glVertex3f(sin(i*angle),0,cos(i*angle));
 		}
 		glEnd();

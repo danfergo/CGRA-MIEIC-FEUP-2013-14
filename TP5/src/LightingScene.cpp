@@ -63,6 +63,10 @@ CGFappearance * wallMaterial;
 CGFappearance * floorAppearance;
 CGFappearance * windowAppearance;
 CGFappearance * columnAppearance;
+CGFappearance * clockAppearance;
+
+ time_t timer;
+
 
 void LightingScene::init() 
 {
@@ -156,6 +160,17 @@ void LightingScene::init()
 
 	columnAppearance= new CGFappearance(ambLeftWall,difLeftWall,specLeftWall,shininessLeftWall);
 	columnAppearance->setTexture("wall.png");
+
+	clockAppearance= new CGFappearance(ambLeftWall,difLeftWall,specLeftWall,shininessLeftWall);
+	clockAppearance->setTexture("clock.png");
+
+	clock = new MyClock(3,30,45);
+
+	time(&timer);  /* get current time; same as: timer = time(NULL)  */
+
+	gmtime(&timer);
+
+	setUpdatePeriod(100);
 }
 
 void LightingScene::display() 
@@ -191,6 +206,16 @@ void LightingScene::display()
 		glTranslatef(7.5,8,7.5);
 		glRotated(180,1,0,0);
 		lamp->draw();
+	glPopMatrix();
+
+
+	
+	// CLOCK !
+	clockAppearance->apply();
+	glPushMatrix();
+		glTranslatef(7.25,7.5,0.2);
+		glScalef(0.45,0.45,1);
+		clock->draw();
 	glPopMatrix();
 
 	// Cylinders
@@ -291,6 +316,12 @@ void LightingScene::display()
 	// glutSwapBuffers() will swap pointers so that the back buffer becomes the front buffer and vice-versa
 	glutSwapBuffers();
 }
+
+
+void LightingScene::update(unsigned long t){
+	clock->update(t);
+}
+
 
 LightingScene::~LightingScene() 
 {

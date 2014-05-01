@@ -69,6 +69,8 @@
     <ClCompile Include="src\LightingScene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MyChair.cpp" />
+    <ClCompile Include="src\MyClock.cpp" />
+    <ClCompile Include="src\MyClockHand.cpp" />
     <ClCompile Include="src\myCylinder.cpp" />
     <ClCompile Include="src\MyLamp.cpp" />
     <ClCompile Include="src\MySemiSphere.cpp" />
@@ -79,6 +81,8 @@
   <ItemGroup>
     <ClInclude Include="src\LightingScene.h" />
     <ClInclude Include="src\MyChair.h" />
+    <ClInclude Include="src\MyClock.h" />
+    <ClInclude Include="src\MyClockHand.h" />
     <ClInclude Include="src\myCylinder.h" />
     <ClInclude Include="src\MyLamp.h" />
     <ClInclude Include="src\MySemiSphere.h" />
