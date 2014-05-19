@@ -1,5 +1,8 @@
 #include "MyLamp.h"
 
+float ambTurnedOn[4] = {20, 20, 20,1};
+float ambTurnedOff[4] = {1, 1, 1,1};
+
 MyLamp::MyLamp(unsigned int lightid){
 	semisphere = new MySemiSphere(15,15);
 	bottom = new myCylinder(30,10,true);
@@ -12,13 +15,11 @@ MyLamp::MyLamp(unsigned int lightid){
 	light->setDiffuse(diffuse);
 
 	// material
-	float amb[4] = {20, 20, 20,1};
-	float dif[4] = {0, 0, 0,1};
+
+	float dif[4] = {1, 1, 1,1};
 	float spec[4] = {1, 1, 0,1};
 	float shininess = 120.f;
-	this->material = new CGFappearance(amb,dif,spec,shininess);
-
-
+	this->material = new CGFappearance(ambTurnedOn,dif,spec,shininess);
 
 	float ambTop[4] = {1, 1, 1,1};
 	float difTop[4] = {1, 1, 0,1};
@@ -32,7 +33,6 @@ MyLamp::MyLamp(unsigned int lightid){
 
 	this->materialTop = new CGFappearance(ambWood,difWood,specWood,shininessWood);
 
-	
 }
 
 
@@ -51,6 +51,18 @@ void MyLamp::draw(){
 		semisphere->draw();
 	glPopMatrix();
 }
+
+void MyLamp::setState(bool s){
+	if(s){
+		this->material->setAmbient(ambTurnedOn);
+		light->enable();
+	}else{
+		this->material->setAmbient(ambTurnedOff);
+		light->disable();
+	}
+	
+}
+
 
 MyLamp::~MyLamp(){
 	delete(light);

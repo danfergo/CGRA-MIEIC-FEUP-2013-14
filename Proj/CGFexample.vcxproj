@@ -66,6 +66,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\LeftWall.cpp" />
     <ClCompile Include="src\LightingScene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MyChair.cpp" />
@@ -81,6 +82,7 @@
     <ClCompile Include="src\TPinterface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\LeftWall.h" />
     <ClInclude Include="src\LightingScene.h" />
     <ClInclude Include="src\MyChair.h" />
     <ClInclude Include="src\MyClock.h" />

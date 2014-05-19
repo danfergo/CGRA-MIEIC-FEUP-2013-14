@@ -9,12 +9,15 @@ typedef struct Point3d{
 
 class MyRobot : public CGFobject
 {
-	float coordx, coordz, angle, nyd, nym; //nyd quota-normal-diagonals; nyd quota-normal-middle(almost) 
+	float coordx, coordz, angle, nyd, nym, ***extraNorm; //nyd quota-normal-diagonals; nyd quota-normal-middle(almost) 
 	Point3d ** dots;
 	float* quotas;
 	unsigned stacks;
-	CGFappearance* textRobot;
+	CGFappearance * textRobot[4];
+	
+	
 public:
+	int textureId;
 	MyRobot(unsigned stacks=10);
 	~MyRobot(void);
 	void setPosition(float xx, float zz, float angle);
@@ -23,5 +26,7 @@ public:
 	void backwards();
 	void toLeft();
 	void toRight();
+	void setWireframeMode(bool m);
+	int wireframe;
 };
 

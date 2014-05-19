@@ -4,30 +4,34 @@
 #include <math.h>
 #include "CGFappearance.h"
 
+float ambWood[3] ={0.70, 0.4, 0.0397};
+float difWood[3] = {0.38, 0.2, 0.0196};
+float specWood[3] = {0.05, 0.05, 0.05};
+float shininessWood = 10.f;
+	
+float ambMetal[3] = {0.4, 0.4, 0.4};
+float difMetal[3] = {0.4, 0.4, 0.4};
+float specMetal[3] = {1, 1, 1};
+float shininessMetal = 5000.f;
+CGFappearance * wood  = new CGFappearance(ambWood,difWood,specWood,shininessWood);
+CGFappearance * metal = new CGFappearance(ambMetal,difMetal,specMetal,shininessMetal);
+
+
+
+	static float pi = acos(-1.0);
+	static float deg2rad=pi/180.0;
 
 MyChair::MyChair(): CGFobject() {
+	wood->setTexture("table.png");
+	
 	rotate = (rand() % 41) - 20;
 }
 
 
 void MyChair::draw(){
 
-	float ambWood[3] ={0.70, 0.4, 0.0397};
-	float difWood[3] = {0.38, 0.2, 0.0196};
-	float specWood[3] = {0.05, 0.05, 0.05};
-	float shininessWood = 10.f;
-	CGFappearance * wood = new CGFappearance(ambWood,difWood,specWood,shininessWood);
-	wood->setTexture("table.png");
-
-	float ambMetal[3] = {0.4, 0.4, 0.4};
-	float difMetal[3] = {0.4, 0.4, 0.4};
-	float specMetal[3] = {1, 1, 1};
-	float shininessMetal = 5000.f;
-	CGFappearance * metal = new CGFappearance(ambMetal,difMetal,specMetal,shininessMetal);
 
 
-	float pi = acos(-1.0);
-	float deg2rad=pi/180.0;
 
 	wood->apply();
 	MyUnitCube myCube = MyUnitCube();

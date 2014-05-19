@@ -11,19 +11,36 @@ float difR[3] = {1,1,1};
 float specR[3] = {0.1, 0.1, 0.1};
 float shininessR = 10.f;
 
-MyRobot::MyRobot(unsigned stacks):coordx(8),coordz(8),angle(0),stacks(stacks){
+MyRobot::MyRobot(unsigned stacks):coordx(8),coordz(8),angle(0),stacks(stacks),wireframe(false){
+	textureId = 0;
+
+	textRobot[0] = new CGFappearance(ambR,difR,specR,shininessR);
+	textRobot[0]->setTexture("robot0.jpg");
+
+	textRobot[1] = new CGFappearance(ambR,difR,specR,shininessR);
+	textRobot[1]->setTexture("robot1.jpg");
 	
-	textRobot = new CGFappearance(ambR,difR,specR,shininessR);
-	textRobot->setTexture("robot.jpg");
+	textRobot[2] = new CGFappearance(ambR,difR,specR,shininessR);
+	textRobot[2]->setTexture("robot2.png");
+
+	textRobot[3] = new CGFappearance(ambR,difR,specR,shininessR);
+	textRobot[3]->setTexture("robot3.jpg");
+
 
 	dots = new Point3d* [stacks+1];
 	for(unsigned i=0; i<=stacks; i++)
 		dots[i] = new Point3d[13];
 	quotas = new float[stacks+1];
+	extraNorm = new float** [stacks+1];
+	for(unsigned i=0; i<=stacks; i++){
+		extraNorm[i] = new float* [4];
+		for(unsigned j=0; j<4; j++)
+			extraNorm[i][j] = new float [2];
+	}
 
 	//m=xf-xi
-	nyd=1/sqrt(2.0)-0.25;
-	nym=sqrt(9.25/36)-0.25;
+	nyd=sin(atan((1/sqrt(2.0)-0.25)));
+	nym=sin(atan((sqrt(9.25/36)-0.25)));
 
 	//points for square base
 	//creats 4 points each iteration in right bottom vertex in each corner anti-clockwise
@@ -36,9 +53,11 @@ MyRobot::MyRobot(unsigned stacks):coordx(8),coordz(8),angle(0),stacks(stacks){
 
 	//normal to points
 	for(unsigned j=0; j<4; j++){
-		dots[0][j*3].nx = sin(PI/4+j*PI/2); dots[0][j*3].nz = cos(PI/4+j*PI/2);
-		dots[0][j*3+1].nx = (j%2!=0)? 0:(j==0 ? 1 : -1); dots[0][j*3+1].nz = (j%2==0)? 0:(j==1 ? -1 : 1);
-		dots[0][j*3+2].nx = dots[0][j*3+1].nx; dots[0][j*3+2].nz = dots[0][j*3+1].nz;
+		float normx = (j%2!=0)? 0:(j==0 ? 1 : -1), normz = (j%2==0)? 0:(j==1 ? -1 : 1);
+		dots[0][j*3].nx = normx; dots[0][j*3].nz = normz;// sin(PI/4+j*PI/2); cos(PI/4+j*PI/2);
+		dots[0][j*3+1].nx = normx; dots[0][j*3+1].nz = normz;
+		dots[0][j*3+2].nx = normx; dots[0][j*3+2].nz = normz;
+		extraNorm[0][j][0] = normx; extraNorm[0][j][1] = normz;
 	}
 
 	dots[0][12]=dots[0][0];
@@ -48,7 +67,6 @@ MyRobot::MyRobot(unsigned stacks):coordx(8),coordz(8),angle(0),stacks(stacks){
 		dots[stacks][j].x=0.25*sin(j*PI/6+PI/4); dots[stacks][j].z=0.25*cos(j*PI/6+PI/4);
 		dots[stacks][j].nx = sin(PI/4+j*PI/6); dots[stacks][j].nz = cos(PI/4+j*PI/6);
 	}
-
 
 	for(unsigned i=0; i<=stacks; i++)
 		quotas[i]=i*1.0/stacks;
@@ -69,16 +87,21 @@ MyRobot::MyRobot(unsigned stacks):coordx(8),coordz(8),angle(0),stacks(stacks){
 	for(unsigned j=0; j<=12; j++){
 		mx = (float)(dots[stacks][j].nx - dots[0][j].nx)/stacks;
 		mz = (float)(dots[stacks][j].nz - dots[0][j].nz)/stacks;
-		for(unsigned i=1; i<stacks; i++){
+		for(unsigned i=1; i<=stacks; i++){
+			if(j%3==0 && j!=12){
+				extraNorm[i][j/3][0]=extraNorm[0][j/3][0] - i*mx;
+				extraNorm[i][j/3][1]=extraNorm[0][j/3][1] - i*mz;
+				/*k = 1/sqrt(pow(2,extraNorm[i][j/3][0]) + pow(2,extraNorm[i][j/3][1]));
+				extraNorm[i][j/3][0] *= k;
+				extraNorm[i][j/3][1] *= k;*/
+			}
 			dots[i][j].nx = dots[0][j].nx + i*mx;
 			dots[i][j].nz = dots[0][j].nz + i*mz;
-			k = 1/sqrt(pow(2,dots[i][j].nx) + pow(2,dots[i][j].nx));
+			/*k = 1/sqrt(pow(2,dots[i][j].nx) + pow(2,dots[i][j].nz));
 			dots[i][j].nx *= k;
-			dots[i][j].nz *= k;
-
+			dots[i][j].nz *= k;*/
 		}
 	}
-
 }
 
 MyRobot::~MyRobot(void){
@@ -97,7 +120,9 @@ void MyRobot::setPosition(float xx, float zz, float angle){
 void MyRobot::draw(){
 	glPushMatrix();
 	
-	textRobot->apply();
+	// Turn on wireframe mode
+	if(wireframe)glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	textRobot[textureId]->apply();
 
 	glTranslated(coordx,0,coordz);
 	glRotated(angle,0,1,0);
@@ -136,6 +161,11 @@ void MyRobot::draw(){
 		glVertex3f(dots[0][j].x,quotas[0],dots[0][j].z);
 	glEnd();
 
+
+	// Turn off wireframe mode
+	if(wireframe)glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
 	glPopMatrix();
 }
 
@@ -155,4 +185,8 @@ void MyRobot::toLeft(){
 
 void MyRobot::toRight(){
 	angle-=05;
+}
+
+void MyRobot::setWireframeMode(bool m){
+	wireframe = m;
 }

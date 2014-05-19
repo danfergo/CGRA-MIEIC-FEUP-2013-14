@@ -14,14 +14,16 @@ float deg2rad=pi/180.0;
 #define BOARD_WIDTH 6.4
 
 // Positions for two lights
-float light0_pos[4] = {0, 5, 7.5, 1.0};
+float light0_pos[4] = {4, 6.0, 1.0, 1.0};
 float light1_pos[4] = {10.5, 6.0, 1.0, 1.0};
 
 float light2_pos[4] = {10.5, 6.0, 5.0, 1.0};
 float light3_pos[4] = {4, 6.0, 5.0, 1.0};
 
+float light_window_pos[4] = {0, 5, 7.5, 1.0};
+
 // Global ambient light (do not confuse with ambient component of individual lights)
-float globalAmbientLight[4]= {0,0,0,0};
+float globalAmbientLight[4]= {0.1,0.1,0.1,1};
 
 // number of divisions
 #define BOARD_A_DIVISIONS 30 
@@ -53,8 +55,8 @@ float difWall[3] = {0.9,0.9,0.9};
 float specWall[3] = {0.01, 0.01, 0.01};
 float shininessWall = 5.f;
 
-float ambLeftWall[3] ={0.2,0.2,0.1};
-float difLeftWall[3] = {1,1,0.9};
+float ambLeftWall[3] ={0.5,0.5,0.5};
+float difLeftWall[3] = {0.9,0.9,0.9};
 float specLeftWall[3] = {0.01, 0.01, 0.01};
 float shininessLeftWall = 5.f;
 
@@ -82,7 +84,10 @@ void LightingScene::robotRight(){
 
 void LightingScene::init() 
 {
-	sceneVar=0;
+	toRight=false; toLeft=false; toForward=false; toBackwards=false;
+	lightsState[0] = 1; lightsState[1] = 0; lightsState[2] = 0; lightsState[3] = 0; lightsState[4] = 0;  lightsState[5] = 0; 
+	clockState = 1;
+	
 	// Enables lighting computations
 	glEnable(GL_LIGHTING);
 
@@ -95,37 +100,34 @@ void LightingScene::init()
 	
 	// Declares and enables two lights, with null ambient component
 	
+
+
+
 	light0 = new CGFlight(GL_LIGHT0, light0_pos);
 	light0->setAmbient(ambientNull);
 	light0->setSpecular(yellow);	
-	//light0->disable();
-	//light0->disable();
 
-	/*light1 = new CGFlight(GL_LIGHT1, light1_pos);
+	light1 = new CGFlight(GL_LIGHT1, light1_pos);
 	light1->setAmbient(ambientNull);
-	//light1->disable();
-	light1->disable();
-	
-	
+
 	//light2
 	light2 = new CGFlight(GL_LIGHT2, light2_pos);
 	light2->setAmbient(ambientNull);
-	//light2->disable();
 	light2->setKc(0);
 	light2->setKl(1);
 	light2->setKq(0);
-	light2->disable();
 
 	
 	//light3
--	light3 = new CGFlight(GL_LIGHT3, light3_pos);
+	light3 = new CGFlight(GL_LIGHT3, light3_pos);
 	light3->setAmbient(ambientNull);
-	//light3->disable();
 	light3->setKc(0);
 	light3->setKl(0);
 	light3->setKq(0.2);
-	light3->disable(); */
 
+	lightWindow = new CGFlight(GL_LIGHT4, light_window_pos);
+	lightWindow->setAmbient(ambientNull);
+	lightWindow->setSpecular(yellow);
 
 	// Uncomment below to enable normalization of lighting normal vectors
 	glEnable (GL_NORMALIZE);
@@ -141,12 +143,15 @@ void LightingScene::init()
 	boardWall = new Plane(100, 0,3.50,0.075,2);
 	floor = new Plane(50, 0,12,0,10);
 	cilindro = new myCylinder(15,5,true);
-	lamp = new MyLamp(GL_LIGHT4);
+	lamp = new MyLamp(GL_LIGHT5);
 
 
 	boardA = new Plane(BOARD_A_DIVISIONS);
 	boardB = new Plane(BOARD_B_DIVISIONS);
 	
+	leftWall = new LeftWall();
+
+
 	//Declares materials	
 	slidesAppearance = new CGFappearance(ambA,difA,specA,shininessB);
 	slidesAppearance->setTexture("slides.png");
@@ -183,7 +188,7 @@ void LightingScene::init()
 
 	gmtime(&timer);
 
-	setUpdatePeriod(100);
+	setUpdatePeriod(30);
 
 	//Robot
 	robot = new MyRobot();
@@ -192,8 +197,8 @@ void LightingScene::init()
 
 	impostor = new Plane(BOARD_A_DIVISIONS);
 	impostorText = new CGFappearance(ambA,difA,specA,shininessB);
-	impostorText->setTexture("cityscape.jpg");
-	impostor->calculateTextFit(30,18,1131,707);
+	impostorText->setTexture("landscape.jpg");
+	impostor->calculateTextFit(30,18,2048,1221);
 }
 
 void LightingScene::display() 
@@ -211,20 +216,27 @@ void LightingScene::display()
 	// Apply transformations corresponding to the camera position relative to the origin
 	CGFscene::activeCamera->applyView();
 	
-	light0->update();
+	if(lightsState[0]) lamp->setState(true); else lamp->setState(false);
+	if(lightsState[1]) light0->enable(); else light0->disable();
+	if(lightsState[2]) light1->enable(); else light1->disable();
+	if(lightsState[3]) light2->enable(); else light2->disable();
+	if(lightsState[4]) light3->enable(); else light3->disable();
+
+
+	lightWindow->update();
+	light0->draw();
+	light1->draw();
+	light2->draw();
+	light3->draw();
 	
-	// turing off 4 lights
-	//light1->draw();
-	//light2->draw();
-	//light3->draw();
-	
-	// Draw axis
 	axis.draw();
 
 	// ---- END Background, camera and axis setup
 
 	// ---- BEGIN Primitive drawing section
 
+
+	
 	glPushMatrix();
 		glTranslatef(7.5,8,7.5);
 		glRotated(180,1,0,0);
@@ -239,12 +251,11 @@ void LightingScene::display()
 	impostorText->apply();
 	glPushMatrix();
 
-	glTranslated(-25,7,0);
-	glRotated(90,0,1,0);
-	glRotated(90,1,0,0);
-	glScaled(30,1,18);
-
-	impostor->draw();
+		glTranslated(-25,-2,5);
+		glRotated(90,0,1,0);
+		glRotated(90,1,0,0);
+		glScaled(60,1,40);
+		impostor->draw();
 	glPopMatrix();
 
 	// CLOCK !
@@ -268,16 +279,13 @@ void LightingScene::display()
 			cilindro->draw();
 		glPopMatrix(); 
 		
-	/*	glPushMatrix();
-			cilindro->setSmooth(false);
-			glTranslatef(12,0,4);
-			cilindro->draw();
-		glPopMatrix(); */
+		//glPushMatrix();
+			//cilindro->setSmooth(false);
+			//glTranslatef(12,0,4);
+			//cilindro->draw();
+		//glPopMatrix(); 
 	glPopMatrix(); 
 
-		
-
-	
 	//First Table
 	glPushMatrix();
 		glTranslated(5,0,8);
@@ -315,17 +323,21 @@ void LightingScene::display()
 		boardWall->draw();
 	glPopMatrix();
 
-
-
 	//LeftWall
 	glPushMatrix();
-		glTranslated(0,4,7.5);
+		windowAppearance->apply();
+		leftWall->draw();
+	glPopMatrix();
+
+	glPushMatrix();
+		glTranslated(-0.1,4,7.5);
 		glRotated(-90.0,0,0,1);
 		glRotated(90.0,0,1,0);
 		glScaled(15,0.2,8);
 		windowAppearance->apply();
-		wall->draw();
+	//	wall->draw();
 	glPopMatrix();
+
 
 	// Board A
 	glPushMatrix();
@@ -356,7 +368,18 @@ void LightingScene::display()
 
 
 void LightingScene::update(unsigned long t){
-	clock->update(t);
+	
+	if(clockState){
+		clock->update(t);
+	}
+	
+
+	bool rToBackwards = toBackwards && !toForward;
+
+	if(toForward) robotForward();
+	if(toLeft) {if(rToBackwards) robotRight(); else robotLeft();};
+	if(toBackwards) robotBackwards();
+	if(toRight) {if(rToBackwards) robotLeft(); else robotRight();}; 
 }
 
 

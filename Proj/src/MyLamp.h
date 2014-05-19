@@ -18,7 +18,10 @@ class MyLamp: public CGFobject{
 		MyLamp(unsigned int lightid);
 		~MyLamp();
 		void draw();
+
+		void setState(bool s);
 };
+
 
 
 

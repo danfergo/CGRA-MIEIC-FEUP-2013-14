@@ -6,6 +6,7 @@
 #include <iostream>
 #include <exception>
 
+
 #include "TPinterface.h"
 #include "CGFapplication.h"
 #include "LightingScene.h"
@@ -13,15 +14,16 @@
 using std::cout;
 using std::exception;
 
-
 int main(int argc, char* argv[]) {
 
 	CGFapplication app = CGFapplication();
 	LightingScene * scene = new LightingScene();
+	TPinterface * tpinterface = new TPinterface(scene);
 	try {
 		app.init(&argc, argv);
 		app.setScene(scene);
-		app.setInterface(new TPinterface(scene));
+		app.setInterface(tpinterface);
+		glutKeyboardUpFunc(tpinterface->preprocessKeyboardUp);
 		app.run();
 	}
 	catch(GLexception& ex) {

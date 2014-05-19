@@ -2,53 +2,100 @@
 #include <iostream>
 
 TPinterface::TPinterface(LightingScene* sc):CGFinterface(),lightingScene(sc){
-testVar=0;
+	IisDown=false; JisDown=false; KisDown=false; LisDown=false;
+
+
+	testVar=0;
 }
+
+void TPinterface::preprocessKeyboardUp(unsigned char key, int x, int y)
+{
+	modifiers=glutGetModifiers();
+	((TPinterface *)CGFinterface::activeInterface)->processKeyboardUp(key,x,y); 
+}
+
+void TPinterface::processKeyboardUp(unsigned char key, int x, int y){
+	switch(key)
+	{
+		case 'i':
+			lightingScene->toForward = false;
+			break;
+		case 'j':
+			lightingScene->toLeft = false;
+			break;
+		case 'k':
+			lightingScene->toBackwards = false;
+			break;
+		case 'l':
+			lightingScene->toRight = false;
+			break;
+	}
+}
+
+
+
 
 void TPinterface::processKeyboard(unsigned char key, int x, int y)
 {
 	switch(key)
 	{
 		case 'i':
-			lightingScene->robotForward();
+			lightingScene->toForward = true;
 			break;
 		case 'j':
-			lightingScene->robotLeft();
+			lightingScene->toLeft = true;
 			break;
 		case 'k':
-			lightingScene->robotBackwards();
+			lightingScene->toBackwards = true;
 			break;
 		case 'l':
-			lightingScene->robotRight();
+			lightingScene->toRight = true;
 			break;
 	}
 }
 
 void TPinterface::initGUI()
 {
-	// Check CGFinterface.h and GLUI documentation for the types of controls available
-	GLUI_Panel *varPanel= addPanel("Group", 1);
-	addSpinnerToPanel(varPanel, "Val 1(interface)", 2, &testVar, 1);
-	
-	// You could also pass a reference to a variable from the scene class, if public
-	addSpinnerToPanel(varPanel, "Val 2(scene)", 2, &(((LightingScene*) scene)->sceneVar), 2);
+	GLUI_Panel * panel= addPanel("Luzes", 1);
+	addCheckboxToPanel (panel, "Luz central",&lightingScene->lightsState[0], 2);
+	addCheckboxToPanel (panel, "Luz sup. esq.", &lightingScene->lightsState[1], 3);
+	addCheckboxToPanel (panel, "Luz sup. dir.", &lightingScene->lightsState[2], 4);
+	addCheckboxToPanel (panel, "Luz inf. esq.", &lightingScene->lightsState[3], 5);
+	addCheckboxToPanel (panel, "Luz sup. dir.", &lightingScene->lightsState[4], 6);
 
+	addColumn();
+
+	GLUI_Panel * panel2 = addPanel("Relogio",1);
+	addButtonToPanel(panel2, "", 8)->set_name(lightingScene->clockState == 0 ? "Iniciar" : "Parar");
+
+	addColumn();
+
+	GLUI_Panel * panel3 = addPanel("Robot",1);
+
+	GLUI_Listbox * listb = addListboxToPanel(panel3, "Textura ",  &lightingScene->robot->textureId, 9);
+	listb->add_item(0,"Predefinicao");
+	listb->add_item(1,"Aço");
+	listb->add_item(2,"Hip-Hop");
+	listb->add_item(3,"Azteca");
+
+	addSeparatorToPanel(panel3);
+
+	addStaticTextToPanel(panel3,"Modo de desenho:");
+	GLUI_RadioGroup * rg = addRadioGroupToPanel(panel3,&lightingScene->robot->wireframe, 13);
+	addRadioButtonToGroup (rg, "Textured");
+	addRadioButtonToGroup (rg, "Wireframe");
 }
+
 
 void TPinterface::processGUI(GLUI_Control *ctrl)
 {
-	printf ("GUI control id: %d\n  ",ctrl->user_id);
+
 	switch (ctrl->user_id)
 	{
-		case 1:
+		case 8:
 		{
-			printf ("New Val 1(interface): %d\n",testVar);
-			break;
-		}
-
-		case 2:
-		{
-			printf ("New Val 2(scene): %d\n",((LightingScene*) scene)->sceneVar);
+			lightingScene->clockState = !lightingScene->clockState;
+			((GLUI_Button *)ctrl)->set_name(lightingScene->clockState == 0 ? "Iniciar" : "Parar");
 			break;
 		}
 	};
