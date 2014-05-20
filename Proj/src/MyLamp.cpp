@@ -14,8 +14,6 @@ MyLamp::MyLamp(unsigned int lightid){
 	light->setAmbient(ambient);
 	light->setDiffuse(diffuse);
 
-	// material
-
 	float dif[4] = {1, 1, 1,1};
 	float spec[4] = {1, 1, 0,1};
 	float shininess = 120.f;
@@ -32,9 +30,7 @@ MyLamp::MyLamp(unsigned int lightid){
 	float shininessWood = 10.f;
 
 	this->materialTop = new CGFappearance(ambWood,difWood,specWood,shininessWood);
-
 }
-
 
 void MyLamp::draw(){
 	light->draw();
@@ -60,9 +56,7 @@ void MyLamp::setState(bool s){
 		this->material->setAmbient(ambTurnedOff);
 		light->disable();
 	}
-	
 }
-
 
 MyLamp::~MyLamp(){
 	delete(light);

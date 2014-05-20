@@ -13,13 +13,11 @@ float deg2rad=pi/180.0;
 #define BOARD_HEIGHT 6.0
 #define BOARD_WIDTH 6.4
 
-// Positions for two lights
+// Positions for lights
 float light0_pos[4] = {4, 6.0, 1.0, 1.0};
 float light1_pos[4] = {10.5, 6.0, 1.0, 1.0};
-
 float light2_pos[4] = {10.5, 6.0, 5.0, 1.0};
 float light3_pos[4] = {4, 6.0, 5.0, 1.0};
-
 float light_window_pos[4] = {0, 5, 7.5, 1.0};
 
 // Global ambient light (do not confuse with ambient component of individual lights)
@@ -98,11 +96,7 @@ void LightingScene::init()
 	// Define ambient light (do not confuse with ambient component of individual lights)
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbientLight);  
 	
-	// Declares and enables two lights, with null ambient component
-	
-
-
-
+	// Declares lights
 	light0 = new CGFlight(GL_LIGHT0, light0_pos);
 	light0->setAmbient(ambientNull);
 	light0->setSpecular(yellow);	
@@ -110,15 +104,12 @@ void LightingScene::init()
 	light1 = new CGFlight(GL_LIGHT1, light1_pos);
 	light1->setAmbient(ambientNull);
 
-	//light2
 	light2 = new CGFlight(GL_LIGHT2, light2_pos);
 	light2->setAmbient(ambientNull);
 	light2->setKc(0);
 	light2->setKl(1);
 	light2->setKq(0);
 
-	
-	//light3
 	light3 = new CGFlight(GL_LIGHT3, light3_pos);
 	light3->setAmbient(ambientNull);
 	light3->setKc(0);
@@ -168,13 +159,11 @@ void LightingScene::init()
 	windowAppearance->setTexture("window.png");
 	windowAppearance->setTextureWrap(GL_CLAMP, GL_CLAMP);
 
-
 	wallMaterial = new CGFappearance(ambWall,difWall,specWall,shininessWall);
 	wallMaterial->setTexture("wall.png");
 
 	floorAppearance = new CGFappearance(ambWall,difFloor,specFloor,shininessFloor);
 	floorAppearance->setTexture("floor.png");
-
 
 	columnAppearance= new CGFappearance(ambLeftWall,difLeftWall,specLeftWall,shininessLeftWall);
 	columnAppearance->setTexture("wall.png");
@@ -203,7 +192,6 @@ void LightingScene::init()
 
 void LightingScene::display() 
 {
-
 	// ---- BEGIN Background, camera and axis setup
 	
 	// Clear image and depth buffer everytime we update the scene
@@ -215,7 +203,7 @@ void LightingScene::display()
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	CGFscene::activeCamera->applyView();
-	
+
 	if(lightsState[0]) lamp->setState(true); else lamp->setState(false);
 	if(lightsState[1]) light0->enable(); else light0->disable();
 	if(lightsState[2]) light1->enable(); else light1->disable();
@@ -366,7 +354,6 @@ void LightingScene::display()
 	glutSwapBuffers();
 }
 
-
 void LightingScene::update(unsigned long t){
 	
 	if(clockState){
@@ -379,9 +366,8 @@ void LightingScene::update(unsigned long t){
 	if(toForward) robotForward();
 	if(toLeft) {if(rToBackwards) robotRight(); else robotLeft();};
 	if(toBackwards) robotBackwards();
-	if(toRight) {if(rToBackwards) robotLeft(); else robotRight();}; 
+	if(toRight) {if(rToBackwards) robotLeft(); else robotRight();};
 }
-
 
 LightingScene::~LightingScene() 
 {
@@ -389,7 +375,8 @@ LightingScene::~LightingScene()
 	delete(light1);
 	delete(light2);
 	delete(light3);
-	
+	delete(lightWindow);
+	delete(robot);
 
 	delete(table);
 	delete(wall);

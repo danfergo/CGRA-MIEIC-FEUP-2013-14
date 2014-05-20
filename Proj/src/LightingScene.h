@@ -19,17 +19,11 @@ class LightingScene : public CGFscene
 private:
 	CGFlight* light0;
 	CGFlight* light1;
-	
-
-	//new lights
 	CGFlight* light2;
 	CGFlight* light3;
-
-	// MySemiShpere
-	MyLamp * lamp;
-
 	CGFlight* lightWindow;
 
+	MyLamp * lamp;
 
 public:
 	void init();
@@ -37,16 +31,21 @@ public:
 	virtual void update(unsigned long);
 	void toggleSomething(){};
 
+	//Robot
+	void robotForward();
+	void robotLeft();
+	void robotBackwards();
+	void robotRight();
+
+	~LightingScene();
+
+
 	int robotTexture;
 	int clockState;
 	int lightsState[5];
 	bool toRight,toLeft,toForward, toBackwards;
 
 	MyRobot* robot;
-
-	
-
-
 
 	MyTable * table;
 	MyChair * chair;
@@ -66,18 +65,8 @@ public:
 	//Cylinder
 	myCylinder * cilindro;
 	
-
-
 	//left wall
 	LeftWall * leftWall;
-
-	~LightingScene();
-
-	//Robot
-	void robotForward();
-	void robotLeft();
-	void robotBackwards();
-	void robotRight();
 };
 
 #endif

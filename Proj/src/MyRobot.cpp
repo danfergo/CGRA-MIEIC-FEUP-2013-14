@@ -39,8 +39,8 @@ MyRobot::MyRobot(unsigned stacks):coordx(8),coordz(8),angle(0),stacks(stacks),wi
 	}
 
 	//m=xf-xi
-	nyd=sin(atan((1/sqrt(2.0)-0.25)));
-	nym=sin(atan((sqrt(9.25/36)-0.25)));
+	nyd=sin(PI/2+atan(1/(1/sqrt(2.0)-0.25)));
+	nym=sin(PI/2+atan(1/(sqrt(9.25/36)-0.25)));
 
 	//points for square base
 	//creats 4 points each iteration in right bottom vertex in each corner anti-clockwise
