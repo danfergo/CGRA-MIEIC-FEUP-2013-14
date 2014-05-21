@@ -85,7 +85,7 @@ void LeftWall::draw(){
 }
 
 bool LeftWall::update(bool open){
-	if(open && angle<100){ angle+=4; return true;}
-	else if(!open && angle>0){ angle-=4; return true;}
+	if(open && angle<100){ angle+=1; return true;}
+	else if(!open && angle>0){ angle-=1; return true;}
 	else return false;
 }

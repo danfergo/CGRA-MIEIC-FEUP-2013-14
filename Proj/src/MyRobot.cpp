@@ -172,11 +172,31 @@ void MyRobot::draw(){
 void MyRobot::backwards(){
 	coordz-=cos(angle*degree2rad)*0.3;
 	coordx-=sin(angle*degree2rad)*0.3;
+	colide(cos(angle*degree2rad)*0.3,sin(angle*degree2rad)*0.3);
 }
 
 void MyRobot::forward(){
 	coordz+=cos(angle*degree2rad)*0.3;
 	coordx+=sin(angle*degree2rad)*0.3;
+	colide(-cos(angle*degree2rad)*0.3,-sin(angle*degree2rad)*0.3);
+}
+
+void MyRobot::colide(float dz, float dx){
+	if(coordz-sqrt(0.5)<0){
+		coordz=sqrt(0.5);
+		coordx+=dx;
+	}
+	else if(coordx-sqrt(0.5)<0){
+		coordx=sqrt(0.5);
+		coordz+=dz;
+	}else if(coordz+sqrt(0.5)>15){
+		coordz=15-sqrt(0.5);
+		coordx+=dx;
+	}
+	else if(coordx+sqrt(0.5)>15){
+		coordx=15-sqrt(0.5);
+		coordz+=dz;
+	}
 }
 
 void MyRobot::toLeft(){

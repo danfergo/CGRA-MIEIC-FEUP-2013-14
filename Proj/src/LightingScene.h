@@ -45,7 +45,7 @@ public:
 	MyTable * table;
 	MyChair * chair;
 	Plane* wall;
-	Plane* boardWall;
+	Plane* boardWall1,* boardWall2,* boardWall3,* boardWall4;
 	Plane* floor;
 	Plane* impostor;
 	Plane* boardA;

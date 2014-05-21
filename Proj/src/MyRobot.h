@@ -14,7 +14,7 @@ class MyRobot : public CGFobject
 	float* quotas;
 	unsigned stacks;
 	CGFappearance * textRobot[4];
-	
+	void colide(float dz, float dx);
 	
 public:
 	int textureId;

@@ -76,7 +76,10 @@ void LightingScene::init()
 	table = new MyTable();
 	chair = new MyChair();
 	wall = new Plane(100,-1.25,2.25,-0.5,1.5);
-	boardWall = new Plane(100, 0,3.50,0.075,2);
+	boardWall1 = new Plane(100, 0,3.50,0.075,1);
+	boardWall2 = new Plane(100, 0,3.50,0.075,1);
+	boardWall3 = new Plane(100, 0,3.50,0.075,1);
+	boardWall4 = new Plane(100, 0,3.50,0.075,1);
 	floor = new Plane(50, 0,12,0,10);
 	cilindro = new myCylinder(15,5,true);
 	lamp = new MyLamp(GL_LIGHT5);
@@ -171,11 +174,11 @@ void LightingScene::display()
 			cilindro->draw();
 		glPopMatrix(); 
 		
-		//glPushMatrix();
-			//cilindro->setSmooth(false);
-			//glTranslatef(12,0,4);
-			//cilindro->draw();
-		//glPopMatrix(); 
+		glPushMatrix();
+			cilindro->setSmooth(false);
+			glTranslatef(12,0,13);
+			cilindro->draw();
+		glPopMatrix(); 
 	glPopMatrix(); 
 
 	//First Table
@@ -207,12 +210,36 @@ void LightingScene::display()
 
 	textures::cementWall->apply();
 
-	//PlaneWall
+	//PlaneWall withboards
 	glPushMatrix();
 		glTranslated(7.5,4,0);
+		glRotated(180.0,0,0,1);
 		glRotated(90.0,1,0,0);
-		glScaled(15,0.2,8);
-		boardWall->draw();
+		glScaled(15,1,8);
+		boardWall1->draw();
+	glPopMatrix();
+	//oposite
+	glPushMatrix();
+		glTranslated(7.5,4,15);
+		glRotated(-90.0,1,0,0);
+		glScaled(15,1,8);
+		boardWall2->draw();
+	glPopMatrix();
+	//in frontof window
+	glPushMatrix();
+		glTranslated(15,4,7.5);
+		glRotated(90.0,0,0,1);
+		glRotated(90.0,0,1,0);
+		glScaled(15,1,8);
+		boardWall2->draw();
+	glPopMatrix();
+
+	//ceil
+	glPushMatrix();
+		glTranslated(7.5,8,7.5);
+		glRotated(180.0,1,0,0);
+		glScaled(15,1,15);
+		boardWall3->draw();
 	glPopMatrix();
 
 	//LeftWall
