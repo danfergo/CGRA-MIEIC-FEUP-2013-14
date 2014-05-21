@@ -11,7 +11,7 @@
 #include "MyClock.h"
 #include "MyRobot.h"
 #include "LeftWall.h"
-
+#include "Sky.h"
 #include <time.h>       //time_t, struct tm, difftime, time, mktime
 
 class LightingScene : public CGFscene
@@ -41,7 +41,7 @@ public:
 	bool toRight,toLeft,toForward, toBackwards, windowState, windowNotStop;
 
 	MyRobot* robot;
-
+	Sky * sky;
 	MyTable * table;
 	MyChair * chair;
 	Plane* wall;

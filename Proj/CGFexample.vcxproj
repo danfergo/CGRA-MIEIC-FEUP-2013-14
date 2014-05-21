@@ -79,6 +79,7 @@
     <ClCompile Include="src\MyTable.cpp" />
     <ClCompile Include="src\MyUnitCube.cpp" />
     <ClCompile Include="src\Plane.cpp" />
+    <ClCompile Include="src\Sky.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TPinterface.cpp" />
   </ItemGroup>
@@ -95,6 +96,7 @@
     <ClInclude Include="src\MyTable.h" />
     <ClInclude Include="src\MyUnitCube.h" />
     <ClInclude Include="src\Plane.h" />
+    <ClInclude Include="src\Sky.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\TPinterface.h" />
   </ItemGroup>
