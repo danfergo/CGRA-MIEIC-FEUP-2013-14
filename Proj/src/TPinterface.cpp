@@ -67,6 +67,9 @@ void TPinterface::initGUI()
 
 	GLUI_Panel * panel2 = addPanel("Relogio",1);
 	addButtonToPanel(panel2, "", 8)->set_name(lightingScene->clockState == 0 ? "Iniciar" : "Parar");
+	
+	GLUI_Panel * panel4 = addPanel("Janela",1);
+	addButtonToPanel(panel4, "", 15)->set_name(lightingScene->windowState == 0 ? "Abrir" : "Fechar");
 
 	addColumn();
 
@@ -84,18 +87,38 @@ void TPinterface::initGUI()
 	GLUI_RadioGroup * rg = addRadioGroupToPanel(panel3,&lightingScene->robot->wireframe, 13);
 	addRadioButtonToGroup (rg, "Textured");
 	addRadioButtonToGroup (rg, "Wireframe");
+
+	addColumn();
+
+	GLUI_Panel * panel5 = addPanel("Slides",16);
+
+	GLUI_Listbox * lists = addListboxToPanel(panel5, "Slides",  &lightingScene->slideNum, 14);
+	lists->add_item(0,"Modelos de Iluminação");
+	lists->add_item(1,"Smooth Shading");
+	lists->add_item(2,"Ray Casting");
 }
 
 
 void TPinterface::processGUI(GLUI_Control *ctrl)
 {
-
 	switch (ctrl->user_id)
 	{
 		case 8:
 		{
 			lightingScene->clockState = !lightingScene->clockState;
 			((GLUI_Button *)ctrl)->set_name(lightingScene->clockState == 0 ? "Iniciar" : "Parar");
+			break;
+		}
+		case 15:
+		{
+			lightingScene->windowState = !lightingScene->windowState;
+			lightingScene->windowNotStop = true;
+			((GLUI_Button *)ctrl)->set_name(lightingScene->windowState == 0 ? "Abrir" : "Fechar");
+			break;
+		}
+		case 16:
+		{
+			lightingScene->slideNum = (lightingScene->slideNum+1)%2;
 			break;
 		}
 	};

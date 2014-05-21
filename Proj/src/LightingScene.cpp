@@ -2,9 +2,6 @@
 #include "CGFaxis.h"
 #include "CGFapplication.h"
 #include <iostream>
-//#include "MyTable.h"
-//#include "Plane.h"
-
 #include <math.h>
 
 float pi = acos(-1.0);
@@ -83,8 +80,8 @@ void LightingScene::robotRight(){
 void LightingScene::init() 
 {
 	toRight=false; toLeft=false; toForward=false; toBackwards=false;
-	lightsState[0] = 1; lightsState[1] = 0; lightsState[2] = 0; lightsState[3] = 0; lightsState[4] = 0;  lightsState[5] = 0; 
-	clockState = 1;
+	lightsState[0] = 1; lightsState[1] = 0; lightsState[2] = 0; lightsState[3] = 0; lightsState[4] = 0;  lightsState[5] = 0;
+	clockState = 1; slideNum=0;
 	
 	// Enables lighting computations
 	glEnable(GL_LIGHTING);
@@ -143,10 +140,19 @@ void LightingScene::init()
 	leftWall = new LeftWall();
 
 
-	//Declares materials	
-	slidesAppearance = new CGFappearance(ambA,difA,specA,shininessB);
-	slidesAppearance->setTexture("slides.png");
-	slidesAppearance->setTextureWrap(GL_CLAMP,GL_CLAMP);
+	//Declares materials
+	slidesAppearance[2] = new CGFappearance(ambA,difA,specA,shininessB);
+	slidesAppearance[2]->setTexture("slide3.png");
+	slidesAppearance[2]->setTextureWrap(GL_CLAMP,GL_CLAMP);
+
+	slidesAppearance[1] = new CGFappearance(ambA,difA,specA,shininessB);
+	slidesAppearance[1]->setTexture("slide2.png");
+	slidesAppearance[1]->setTextureWrap(GL_CLAMP,GL_CLAMP);
+	
+	slidesAppearance[0] = new CGFappearance(ambA,difA,specA,shininessB);
+	slidesAppearance[0]->setTexture("slide1.png");
+	slidesAppearance[0]->setTextureWrap(GL_CLAMP,GL_CLAMP);
+
 	boardA->calculateTextFit(BOARD_WIDTH,BOARD_HEIGHT,512,512);
 
 	
@@ -168,6 +174,7 @@ void LightingScene::init()
 	columnAppearance= new CGFappearance(ambLeftWall,difLeftWall,specLeftWall,shininessLeftWall);
 	columnAppearance->setTexture("wall.png");
 
+	//Clock
 	clockAppearance= new CGFappearance(ambLeftWall,difLeftWall,specLeftWall,shininessLeftWall);
 	clockAppearance->setTexture("clock.png");
 
@@ -177,7 +184,7 @@ void LightingScene::init()
 
 	gmtime(&timer);
 
-	setUpdatePeriod(30);
+	setUpdatePeriod(10);
 
 	//Robot
 	robot = new MyRobot();
@@ -223,22 +230,18 @@ void LightingScene::display()
 
 	// ---- BEGIN Primitive drawing section
 
-
-	
 	glPushMatrix();
 		glTranslatef(7.5,8,7.5);
 		glRotated(180,1,0,0);
 		lamp->draw();
 	glPopMatrix();
 
-	
 	//	ROBOT
 	robot->draw();
 
 	//Impostor
 	impostorText->apply();
 	glPushMatrix();
-
 		glTranslated(-25,-2,5);
 		glRotated(90,0,1,0);
 		glRotated(90,1,0,0);
@@ -255,7 +258,6 @@ void LightingScene::display()
 	glPopMatrix();
 
 	// Cylinders
-
 	columnAppearance->apply();
 
 	glPushMatrix();	
@@ -332,7 +334,7 @@ void LightingScene::display()
 		glTranslated(4,4,0.2);
 		glScaled(BOARD_WIDTH,BOARD_HEIGHT,1);
 		glRotated(90.0,1,0,0);
-		slidesAppearance->apply();
+		slidesAppearance[slideNum]->apply();
 		boardA->draw();
 	glPopMatrix();
 	
@@ -356,10 +358,9 @@ void LightingScene::display()
 
 void LightingScene::update(unsigned long t){
 	
-	if(clockState){
-		clock->update(t);
-	}
-	
+	if(clockState) clock->update(t);
+
+	if(windowNotStop) windowNotStop=leftWall->update(windowState);
 
 	bool rToBackwards = toBackwards && !toForward;
 

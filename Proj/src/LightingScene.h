@@ -12,7 +12,7 @@
 #include "MyRobot.h"
 #include "LeftWall.h"
 
-#include <time.h>       /* time_t, struct tm, difftime, time, mktime */
+#include <time.h>       //time_t, struct tm, difftime, time, mktime
 
 class LightingScene : public CGFscene
 {
@@ -39,11 +39,8 @@ public:
 
 	~LightingScene();
 
-
-	int robotTexture;
-	int clockState;
-	int lightsState[5];
-	bool toRight,toLeft,toForward, toBackwards;
+	int robotTexture, clockState, lightsState[5], slideNum;
+	bool toRight,toLeft,toForward, toBackwards, windowState, windowNotStop;
 
 	MyRobot* robot;
 
@@ -55,7 +52,7 @@ public:
 	Plane* impostor;
 	Plane* boardA;
 	Plane* boardB;
-	CGFappearance* slidesAppearance;
+	CGFappearance* slidesAppearance[3];
 	CGFappearance* boardAppearance;
 	CGFappearance* impostorText;
 

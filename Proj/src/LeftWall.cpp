@@ -9,8 +9,8 @@ LeftWall::LeftWall(void)
 	right = new Plane(100,0.96,2.25,-0.5,1.5);
 	leftWindow = new Plane(100,0.5,0.96,0.05,0.7);
 	rightWindow = new Plane(100,0.04,0.5,0.05,0.7);
+	angle=0;
 }
-
 
 LeftWall::~LeftWall(void)
 {
@@ -20,11 +20,9 @@ LeftWall::~LeftWall(void)
 	delete(right);
 }
 
-
 void LeftWall::draw(){
 	glPushMatrix();
-	// glScaled(15,0.2,8);
-
+	
 	glPushMatrix();
 		glTranslated(0,4,7.5);
 		glRotated(-90.0,0,0,1);
@@ -41,9 +39,7 @@ void LeftWall::draw(){
 			glScaled(5.5,1,8);
 			left->draw();
 		glPopMatrix();
-
 	glPopMatrix();
-
 
 	glPushMatrix();
 		glTranslated(0,1.1,7.5);
@@ -55,7 +51,6 @@ void LeftWall::draw(){
 		centerBottom->draw();
 	glPopMatrix();
 
-
 	glPushMatrix();
 		glTranslated(0,6.4,7.5);
 		
@@ -66,28 +61,31 @@ void LeftWall::draw(){
 		centerTop->draw();
 	glPopMatrix();
 
-
 	glPushMatrix();
-		
-		glTranslated(-0.985,3.5,6.5-1.18);
-		glRotated(-100,0,1,0);
+		glTranslated(0,2.2,5.5);
+		glRotated(-angle,0,1,0);
 		glRotated(-90.0,0,0,1);
 		glRotated(90.0,0,1,0);
-
+		glTranslated(-1,0,-1.3);
 		glScaled(2,1,2.6);
 		leftWindow->draw();
 	glPopMatrix();
 
 	glPushMatrix();
-		
-		glTranslated(-0.985,3.5,8.5+1.18);
-		glRotated(100,0,1,0);
+		glTranslated(0,2.2,9.5);
+		glRotated(angle,0,1,0);
 		glRotated(-90.0,0,0,1);
 		glRotated(90.0,0,1,0);
-
+		glTranslated(1,0,-1.3);
 		glScaled(2,1,2.6);
 		rightWindow->draw();
 	glPopMatrix();
 
 	glPopMatrix();
+}
+
+bool LeftWall::update(bool open){
+	if(open && angle<100){ angle+=4; return true;}
+	else if(!open && angle>0){ angle-=4; return true;}
+	else return false;
 }

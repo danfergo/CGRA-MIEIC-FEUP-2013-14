@@ -46,7 +46,7 @@ void MyClock::setTime(float h, float m, float s){
 }
 
 void MyClock::draw(){
-		glPushMatrix();
+	glPushMatrix();
 		
 		glPushMatrix();
 			glRotated(90,1,0,0);
@@ -56,8 +56,7 @@ void MyClock::draw(){
 
 
 		pointerAppearance->apply();
-	
-
+		
 
 		glPushMatrix();
 			glTranslatef(0,0,0.06);
@@ -67,15 +66,12 @@ void MyClock::draw(){
 			glPopMatrix();
 
 			glPushMatrix();
-
 				minutes->draw();
 			glPopMatrix();
 
 			glPushMatrix();
-
 				seconds->draw();
 			glPopMatrix();
-
 		glPopMatrix();
 				
 	glPopMatrix();
