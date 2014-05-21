@@ -3,11 +3,10 @@
 #include "CGFObject.h"
 #include "MyUnitCube.h"
 class MyTable: public CGFobject {
+	MyUnitCube * myCube;
 	float xTrans;
 	float zTrans;
 	int rPN;
-	// Coefficients for material B
-
 public:
 	MyTable();
 	void draw();

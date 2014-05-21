@@ -2,13 +2,15 @@
 #include "CGFaxis.h"
 #include "CGFapplication.h"
 #include <iostream>
-#include <math.h>
+#include "Texture.h"
 
-float pi = acos(-1.0);
-float deg2rad=pi/180.0;
-
+//boards size
 #define BOARD_HEIGHT 6.0
 #define BOARD_WIDTH 6.4
+
+// number of divisions
+#define BOARD_A_DIVISIONS 30 
+#define BOARD_B_DIVISIONS 100
 
 // Positions for lights
 float light0_pos[4] = {4, 6.0, 1.0, 1.0};
@@ -20,49 +22,10 @@ float light_window_pos[4] = {0, 5, 7.5, 1.0};
 // Global ambient light (do not confuse with ambient component of individual lights)
 float globalAmbientLight[4]= {0.1,0.1,0.1,1};
 
-// number of divisions
-#define BOARD_A_DIVISIONS 30 
-#define BOARD_B_DIVISIONS 100
-
 // Coefficients for material A
-float ambA[3] = {1,1,1};
-float difA[3] = {1,1,1};
-float specA[3] = {0.1, 0.1, 0.1};
-float shininessA = 10.f;
+float ambA[3] = {1,1,1}, difA[3] = {1,1,1}, specA[3] = {0.1, 0.1, 0.1}, shininessA = 10.f;
 
-// Coefficients for material B
-float ambB[3] = {0.2, 0.2, 0.2};
-float difB[3] = {0.7, 0.7, 0.7};
-float specB[3] = {0.9, 0.9, 0.9};
-float shininessB = 120.f;
-
-float ambientNull[4]={0,0,0,1};
-float yellow[4]={1,1,0,1};
-
-
-float ambFloor[3] ={0.05,0.025,0.01};
-float difFloor[3] = {0.4,0.25,0.1};
-float specFloor[3] = {0.01, 0.01, 0.01};
-float shininessFloor = 5.f;
-
-float ambWall[3] ={0.5,0.5,0.5};
-float difWall[3] = {0.9,0.9,0.9};
-float specWall[3] = {0.01, 0.01, 0.01};
-float shininessWall = 5.f;
-
-float ambLeftWall[3] ={0.5,0.5,0.5};
-float difLeftWall[3] = {0.9,0.9,0.9};
-float specLeftWall[3] = {0.01, 0.01, 0.01};
-float shininessLeftWall = 5.f;
-
-
-CGFappearance * wallMaterial;
-CGFappearance * floorAppearance;
-CGFappearance * windowAppearance;
-CGFappearance * columnAppearance;
-CGFappearance * clockAppearance;
-
- time_t timer;
+time_t timer;
 
 void LightingScene::robotForward(){
 	robot->forward();
@@ -93,36 +56,21 @@ void LightingScene::init()
 	// Define ambient light (do not confuse with ambient component of individual lights)
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbientLight);  
 	
+	textures::loadImageTextures();
+	setUpdatePeriod(10);
+
 	// Declares lights
-	light0 = new CGFlight(GL_LIGHT0, light0_pos);
-	light0->setAmbient(ambientNull);
-	light0->setSpecular(yellow);	
-
-	light1 = new CGFlight(GL_LIGHT1, light1_pos);
-	light1->setAmbient(ambientNull);
-
-	light2 = new CGFlight(GL_LIGHT2, light2_pos);
-	light2->setAmbient(ambientNull);
-	light2->setKc(0);
-	light2->setKl(1);
-	light2->setKq(0);
-
-	light3 = new CGFlight(GL_LIGHT3, light3_pos);
-	light3->setAmbient(ambientNull);
-	light3->setKc(0);
-	light3->setKl(0);
-	light3->setKq(0.2);
-
-	lightWindow = new CGFlight(GL_LIGHT4, light_window_pos);
-	lightWindow->setAmbient(ambientNull);
-	lightWindow->setSpecular(yellow);
+	light0 = new CGFlight(GL_LIGHT0, light0_pos);light0->setAmbient(colors::ambientNull);light0->setSpecular(colors::yellow);	
+	light1 = new CGFlight(GL_LIGHT1, light1_pos);light1->setAmbient(colors::ambientNull);
+	light2 = new CGFlight(GL_LIGHT2, light2_pos);light2->setAmbient(colors::ambientNull);light2->setKc(0);light2->setKl(1);light2->setKq(0);
+	light3 = new CGFlight(GL_LIGHT3, light3_pos);light3->setAmbient(colors::ambientNull);light3->setKc(0);light3->setKl(0);light3->setKq(0.2);
+	lightWindow = new CGFlight(GL_LIGHT4, light_window_pos);lightWindow->setAmbient(colors::ambientNull);lightWindow->setSpecular(colors::yellow);
 
 	// Uncomment below to enable normalization of lighting normal vectors
 	glEnable (GL_NORMALIZE);
 
 	// Enalble shade model GL_FLAT
 	// glShadeModel(GL_FLAT);
-
 
 	//Declares scene elements
 	table = new MyTable();
@@ -132,69 +80,21 @@ void LightingScene::init()
 	floor = new Plane(50, 0,12,0,10);
 	cilindro = new myCylinder(15,5,true);
 	lamp = new MyLamp(GL_LIGHT5);
-
+	clock = new MyClock(3,30,45);
 
 	boardA = new Plane(BOARD_A_DIVISIONS);
 	boardB = new Plane(BOARD_B_DIVISIONS);
-	
+	robot = new MyRobot();
 	leftWall = new LeftWall();
-
-
-	//Declares materials
-	slidesAppearance[2] = new CGFappearance(ambA,difA,specA,shininessB);
-	slidesAppearance[2]->setTexture("slide3.png");
-	slidesAppearance[2]->setTextureWrap(GL_CLAMP,GL_CLAMP);
-
-	slidesAppearance[1] = new CGFappearance(ambA,difA,specA,shininessB);
-	slidesAppearance[1]->setTexture("slide2.png");
-	slidesAppearance[1]->setTextureWrap(GL_CLAMP,GL_CLAMP);
-	
-	slidesAppearance[0] = new CGFappearance(ambA,difA,specA,shininessB);
-	slidesAppearance[0]->setTexture("slide1.png");
-	slidesAppearance[0]->setTextureWrap(GL_CLAMP,GL_CLAMP);
+	impostor = new Plane(BOARD_A_DIVISIONS);
 
 	boardA->calculateTextFit(BOARD_WIDTH,BOARD_HEIGHT,512,512);
-
-	
-	boardAppearance = new CGFappearance(ambB,difB,specB,shininessB);
-	boardAppearance->setTexture("board.png");
-	boardAppearance->setTextureWrap(GL_CLAMP,GL_CLAMP);
 	boardB->calculateTextFit(BOARD_WIDTH,BOARD_HEIGHT,512,327);
-
-	windowAppearance= new CGFappearance(ambLeftWall,difLeftWall,specLeftWall,shininessLeftWall);
-	windowAppearance->setTexture("window.png");
-	windowAppearance->setTextureWrap(GL_CLAMP, GL_CLAMP);
-
-	wallMaterial = new CGFappearance(ambWall,difWall,specWall,shininessWall);
-	wallMaterial->setTexture("wall.png");
-
-	floorAppearance = new CGFappearance(ambWall,difFloor,specFloor,shininessFloor);
-	floorAppearance->setTexture("floor.png");
-
-	columnAppearance= new CGFappearance(ambLeftWall,difLeftWall,specLeftWall,shininessLeftWall);
-	columnAppearance->setTexture("wall.png");
-
-	//Clock
-	clockAppearance= new CGFappearance(ambLeftWall,difLeftWall,specLeftWall,shininessLeftWall);
-	clockAppearance->setTexture("clock.png");
-
-	clock = new MyClock(3,30,45);
+	impostor->calculateTextFit(30,18,2048,1221);
 
 	time(&timer);  /* get current time; same as: timer = time(NULL)  */
-
 	gmtime(&timer);
 
-	setUpdatePeriod(10);
-
-	//Robot
-	robot = new MyRobot();
-
-	//impostor
-
-	impostor = new Plane(BOARD_A_DIVISIONS);
-	impostorText = new CGFappearance(ambA,difA,specA,shininessB);
-	impostorText->setTexture("landscape.jpg");
-	impostor->calculateTextFit(30,18,2048,1221);
 }
 
 void LightingScene::display() 
@@ -211,6 +111,9 @@ void LightingScene::display()
 	// Apply transformations corresponding to the camera position relative to the origin
 	CGFscene::activeCamera->applyView();
 
+	//axis.draw();
+
+
 	if(lightsState[0]) lamp->setState(true); else lamp->setState(false);
 	if(lightsState[1]) light0->enable(); else light0->disable();
 	if(lightsState[2]) light1->enable(); else light1->disable();
@@ -224,7 +127,6 @@ void LightingScene::display()
 	light2->draw();
 	light3->draw();
 	
-	axis.draw();
 
 	// ---- END Background, camera and axis setup
 
@@ -240,7 +142,7 @@ void LightingScene::display()
 	robot->draw();
 
 	//Impostor
-	impostorText->apply();
+	textures::impostor->apply();
 	glPushMatrix();
 		glTranslated(-25,-2,5);
 		glRotated(90,0,1,0);
@@ -250,7 +152,7 @@ void LightingScene::display()
 	glPopMatrix();
 
 	// CLOCK !
-	clockAppearance->apply();
+	textures::clockFace->apply();
 	glPushMatrix();
 		glTranslatef(7.25,7.5,0.2);
 		glScalef(0.45,0.45,1);
@@ -258,7 +160,7 @@ void LightingScene::display()
 	glPopMatrix();
 
 	// Cylinders
-	columnAppearance->apply();
+	textures::cementWall->apply();
 
 	glPushMatrix();	
 		glScaled(1,8,1);	
@@ -294,7 +196,7 @@ void LightingScene::display()
 		chair->draw();
 	glPopMatrix();
 
-	floorAppearance->apply();
+	textures::groundWoodPattern->apply();
 
 	//Floor
 	glPushMatrix();
@@ -303,7 +205,7 @@ void LightingScene::display()
 		floor->draw();
 	glPopMatrix();
 
-	wallMaterial->apply();
+	textures::cementWall->apply();
 
 	//PlaneWall
 	glPushMatrix();
@@ -315,26 +217,16 @@ void LightingScene::display()
 
 	//LeftWall
 	glPushMatrix();
-		windowAppearance->apply();
+		textures::windowWall->apply();
 		leftWall->draw();
 	glPopMatrix();
-
-	glPushMatrix();
-		glTranslated(-0.1,4,7.5);
-		glRotated(-90.0,0,0,1);
-		glRotated(90.0,0,1,0);
-		glScaled(15,0.2,8);
-		windowAppearance->apply();
-	//	wall->draw();
-	glPopMatrix();
-
 
 	// Board A
 	glPushMatrix();
 		glTranslated(4,4,0.2);
 		glScaled(BOARD_WIDTH,BOARD_HEIGHT,1);
 		glRotated(90.0,1,0,0);
-		slidesAppearance[slideNum]->apply();
+		textures::boardA[slideNum]->apply();
 		boardA->draw();
 	glPopMatrix();
 	
@@ -343,7 +235,7 @@ void LightingScene::display()
 		glTranslated(10.5,4,0.2);
 		glScaled(BOARD_WIDTH,BOARD_HEIGHT,1);
 		glRotated(90.0,1,0,0);
-		boardAppearance->apply();
+		textures::boardB->apply();
 		boardB->draw();
 	glPopMatrix();
 	
@@ -363,7 +255,6 @@ void LightingScene::update(unsigned long t){
 	if(windowNotStop) windowNotStop=leftWall->update(windowState);
 
 	bool rToBackwards = toBackwards && !toForward;
-
 	if(toForward) robotForward();
 	if(toLeft) {if(rToBackwards) robotRight(); else robotLeft();};
 	if(toBackwards) robotBackwards();
@@ -383,6 +274,4 @@ LightingScene::~LightingScene()
 	delete(wall);
 	delete(boardA);
 	delete(boardB);
-	delete(slidesAppearance);
-	delete(boardAppearance);
 }

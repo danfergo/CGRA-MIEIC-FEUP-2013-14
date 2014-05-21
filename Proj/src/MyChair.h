@@ -5,6 +5,7 @@
 
 class MyChair: public CGFobject {
 private:
+	MyUnitCube * myCube;
 	int rotate;
 public:
 	MyChair();

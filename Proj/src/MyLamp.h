@@ -11,18 +11,13 @@ class MyLamp: public CGFobject{
 	private:
 		CGFlight * light;
 		CGFappearance * material;
-		CGFappearance * materialTop;
 		MySemiSphere * semisphere;
 		myCylinder * bottom;
 	public:
 		MyLamp(unsigned int lightid);
 		~MyLamp();
 		void draw();
-
 		void setState(bool s);
 };
-
-
-
 
 #endif

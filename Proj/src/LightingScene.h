@@ -29,15 +29,13 @@ public:
 	void init();
 	void display();
 	virtual void update(unsigned long);
-	void toggleSomething(){};
+	~LightingScene();
 
-	//Robot
+	//Robot movment
 	void robotForward();
 	void robotLeft();
 	void robotBackwards();
 	void robotRight();
-
-	~LightingScene();
 
 	int robotTexture, clockState, lightsState[5], slideNum;
 	bool toRight,toLeft,toForward, toBackwards, windowState, windowNotStop;
@@ -52,17 +50,13 @@ public:
 	Plane* impostor;
 	Plane* boardA;
 	Plane* boardB;
-	CGFappearance* slidesAppearance[3];
-	CGFappearance* boardAppearance;
-	CGFappearance* impostorText;
 
-	//Clock
+	//CGFappearance* slidesAppearance[3];
+	//CGFappearance* boardAppearance;
+	//CGFappearance* impostorText;
+
 	MyClock * clock;
-
-	//Cylinder
 	myCylinder * cilindro;
-	
-	//left wall
 	LeftWall * leftWall;
 };
 
