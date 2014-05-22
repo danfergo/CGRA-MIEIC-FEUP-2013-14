@@ -25,7 +25,8 @@ namespace textures{
 	CGFappearance * boardB = new CGFappearance(ambB,difB,specB,shininessB);
 
 	CGFappearance * impostor = new CGFappearance(ambB,difB,specB,shininessB);
-
+	CGFappearance * sky = new CGFappearance(ambB,difB,specB,shininessB);
+	
 	void loadImageTextures(){
 		wood->setTexture("table.png");
 		cementWall->setTexture("wall.png");
@@ -50,6 +51,7 @@ namespace textures{
 		windowWall->setTexture("window.png");
 		windowWall->setTextureWrap(GL_CLAMP, GL_CLAMP);
 	
+		sky->setTexture("sky.png");
 	}
 
 }

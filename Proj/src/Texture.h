@@ -21,6 +21,7 @@ namespace textures{
 	extern CGFappearance * boardB;
 	extern CGFappearance * impostor;
 	extern CGFappearance * windowWall;
+	extern CGFappearance * sky;
 	void loadImageTextures();
 }
 

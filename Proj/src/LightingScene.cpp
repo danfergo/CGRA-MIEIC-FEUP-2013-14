@@ -4,6 +4,8 @@
 #include <iostream>
 #include "Texture.h"
 
+
+
 //boards size
 #define BOARD_HEIGHT 6.0
 #define BOARD_WIDTH 6.4
@@ -84,7 +86,7 @@ void LightingScene::init()
 	cilindro = new myCylinder(15,5,true);
 	lamp = new MyLamp(GL_LIGHT5);
 	clock = new MyClock(3,30,45);
-
+	sky = new Sky(9,18);
 	boardA = new Plane(BOARD_A_DIVISIONS);
 	boardB = new Plane(BOARD_B_DIVISIONS);
 	robot = new MyRobot();
@@ -143,6 +145,13 @@ void LightingScene::display()
 
 	//	ROBOT
 	robot->draw();
+
+	glPushMatrix();
+		
+		glTranslatef(0,-0.1,0);
+		glScaled(45,45,45);
+		sky->draw();
+	glPopMatrix();
 
 	//Impostor
 	textures::impostor->apply();
